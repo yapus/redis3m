@@ -41,12 +41,12 @@ _database(0)
 #ifndef NO_BOOST
     boost::algorithm::split(sentinel_hosts, sentinel_host, boost::is_any_of(","), boost::token_compress_on);
 #else //http://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
-	std::string s;
-	std::istringstream f(sentinel_host.c_str());
-	while (std::getline(f, s, ',')) {
-		std::cout << s << std::endl;
-		sentinel_hosts.push_back(s);
-	}
+    std::string s;
+    std::istringstream f(sentinel_host.c_str());
+    while (std::getline(f, s, ',')) {
+        std::cout << s << std::endl;
+        sentinel_hosts.push_back(s);
+    }
 #endif
 }
 
@@ -63,12 +63,12 @@ _database(0)
 #ifndef NO_BOOST
     boost::algorithm::split(sentinel_hosts, sentinel_host, boost::is_any_of(","), boost::token_compress_on);
 #else //http://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
-	std::string s;
-	std::istringstream f(sentinel_host.c_str());
-	while (std::getline(f, s, ',')) {
-		std::cout << s << std::endl;
-		sentinel_hosts.push_back(s);
-	}
+    std::string s;
+    std::istringstream f(sentinel_host.c_str());
+    while (std::getline(f, s, ',')) {
+        std::cout << s << std::endl;
+        sentinel_hosts.push_back(s);
+    }
 #endif
 }
 
@@ -174,17 +174,16 @@ connection::ptr_t connection_pool::sentinel_connection()
 #endif
             try
             {
-				if(to_usec >= 0 && to_sec >= 0){ //check for valid timeout values
-					struct timeval to;
-					to.tv_sec = to_sec;
-					to.tv_usec = to_usec;
-					return connection::createTimeout(real_sentinel, sentinel_port, to);
-				}
-				else
-				{
-					return connection::create(real_sentinel, sentinel_port); //normal connection
-				}
-
+                if(to_usec >= 0 && to_sec >= 0){ //check for valid timeout values
+                    struct timeval to;
+                    to.tv_sec = to_sec;
+                    to.tv_usec = to_usec;
+                    return connection::createTimeout(real_sentinel, sentinel_port, to);
+                }
+                else
+                {
+                    return connection::create(real_sentinel, sentinel_port); //normal connection
+                }
             } catch (const unable_to_connect& )
             {
 #ifndef NO_BOOST
@@ -200,24 +199,24 @@ connection::ptr_t connection_pool::sentinel_connection()
 
 connection::role_t connection_pool::get_role(connection::ptr_t conn)
 {
-	static const 
+    static const 
 #ifndef NO_BOOST
     boost::regex 
 #else
-	std::regex 
+    std::regex 
 #endif
-	role_searcher("\r\nrole:([a-z]+)\r\n");
+    role_searcher("\r\nrole:([a-z]+)\r\n");
 
     reply r = conn->run(command("ROLE"));
     std::string role_s;
 
     if (r.type() == reply::type_t::ERROR
 #ifndef NO_BOOST
-		&& boost::algorithm::find_first(r.str(),"unknown"))
+        && boost::algorithm::find_first(r.str(),"unknown"))
 #else
-		&& (r.str().find("unknown") != std::string::npos) )
+        && (r.str().find("unknown") != std::string::npos) )
 #endif
-		
+        
     {
         logging::debug("Old redis, doesn't support ROLE command");
         reply r = conn->run(command("INFO") << "replication");
@@ -225,8 +224,8 @@ connection::role_t connection_pool::get_role(connection::ptr_t conn)
         boost::smatch results;
         if (boost::regex_search(r.str(), results, role_searcher))
 #else
-		std::smatch results;
-		if (std::regex_search(r.str(), results, role_searcher))
+        std::smatch results;
+        if (std::regex_search(r.str(), results, role_searcher))
 #endif
         {
             role_s = results[1];
@@ -398,3 +397,4 @@ void connection_pool::run_with_connection(std::function<void(connection::ptr_t)>
     }
     throw too_much_retries();
 }
+
