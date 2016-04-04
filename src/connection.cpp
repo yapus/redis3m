@@ -6,6 +6,16 @@
 
 using namespace redis3m;
 
+connection::connection(const std::string& host, const unsigned port, const struct timeval timeout)
+{
+    c = redisConnectWithTimeout(host.c_str(), port, timeout);
+    if (c->err != REDIS_OK)
+    {
+        redisFree(c);
+        throw unable_to_connect();
+    }
+}
+
 connection::connection(const std::string& host, const unsigned port)
 {
     c = redisConnect(host.c_str(), port);

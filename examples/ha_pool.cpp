@@ -5,7 +5,7 @@ using namespace redis3m;
 
 int main(int argc, char **argv)
 {
-    connection_pool::ptr_t pool = connection_pool::create("<yoursentinel>", "test");
+    connection_pool::ptr_t pool = connection_pool::create("<yoursentinel>", "test", 500000); //500ms timeout
     
     connection::ptr_t c = pool->get(connection::MASTER);
     c->run(command("SET") << "foo" << "bar");

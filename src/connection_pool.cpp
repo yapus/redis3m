@@ -28,9 +28,32 @@ using namespace redis3m;
 
 connection_pool::connection_pool(const std::string& sentinel_host,
                                  const std::string& master_name,
+                                 unsigned int sentinel_port,
+                                 long int to_usec):
+master_name(master_name),
+sentinel_port(sentinel_port),
+to_usec(to_usec),
+password(""),
+_database(0)
+{
+#ifndef NO_BOOST
+    boost::algorithm::split(sentinel_hosts, sentinel_host, boost::is_any_of(","), boost::token_compress_on);
+#else //http://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g
+	std::string s;
+	std::istringstream f(sentinel_host.c_str());
+	while (std::getline(f, s, ',')) {
+		std::cout << s << std::endl;
+		sentinel_hosts.push_back(s);
+	}
+#endif
+}
+
+connection_pool::connection_pool(const std::string& sentinel_host,
+                                 const std::string& master_name,
                                  unsigned int sentinel_port):
 master_name(master_name),
 sentinel_port(sentinel_port),
+to_usec(-1),
 password(""),
 _database(0)
 {
@@ -148,7 +171,12 @@ connection::ptr_t connection_pool::sentinel_connection()
 #endif
             try
             {
-                return connection::create(real_sentinel, sentinel_port);
+                //return connection::create(real_sentinel, sentinel_port);
+            	struct timeval to;
+				to.tv_sec = 1;
+				to.tv_usec = 0;
+            	return connection::createTimeout(real_sentinel, sentinel_port, to);
+
             } catch (const unable_to_connect& )
             {
 #ifndef NO_BOOST
