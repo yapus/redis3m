@@ -397,4 +397,3 @@ void connection_pool::run_with_connection(std::function<void(connection::ptr_t)>
     }
     throw too_much_retries();
 }
-
