@@ -171,11 +171,16 @@ connection::ptr_t connection_pool::sentinel_connection()
 #endif
             try
             {
-                //return connection::create(real_sentinel, sentinel_port);
-            	struct timeval to;
-				to.tv_sec = 1;
-				to.tv_usec = 0;
-            	return connection::createTimeout(real_sentinel, sentinel_port, to);
+				if(to_usec > 0){ //check for valid timeout value
+					struct timeval to;
+					to.tv_sec = 0;
+					to.tv_usec = to_usec;
+					return connection::createTimeout(real_sentinel, sentinel_port, to);
+            	}
+				else
+				{
+					return connection::create(real_sentinel, sentinel_port); //normal connection
+				}
 
             } catch (const unable_to_connect& )
             {
