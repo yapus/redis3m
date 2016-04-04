@@ -35,15 +35,17 @@ namespace redis3m {
          * if an host has multiple IPs, connection_pool tries all of them
          * @param master_name Master to lookup
          * @param sentinel_port Sentinel port, default 26379
-         * @param to_usec Timeout microseconds, default 1000000
+         * @param to_sec Timeout seconds, default 1
+         * @param to_usec Timeout microseconds, default 0
          * @return
          */
         static inline ptr_t createTimeout(const std::string& sentinel_host,
                                    const std::string& master_name,
                                    unsigned int sentinel_port=26379,
-                                   long int to_usec=1000000)
+                                   time_t to_sec=1,
+                                   long int to_usec=0)
         {
-            return ptr_t(new connection_pool(sentinel_host, master_name, sentinel_port, to_usec));
+            return ptr_t(new connection_pool(sentinel_host, master_name, sentinel_port, to_sec, to_usec));
         }
 
         /**
@@ -125,6 +127,7 @@ namespace redis3m {
         connection_pool(const std::string& sentinel_host,
 					   const std::string& master_name,
 					   unsigned int sentinel_port,
+					   time_t to_sec,
 					   long int to_usec);
         connection_pool(const std::string& sentinel_host,
                         const std::string& master_name,
@@ -140,6 +143,7 @@ namespace redis3m {
 
         std::vector<std::string> sentinel_hosts;
         unsigned int sentinel_port;
+        time_t to_sec;
         long int to_usec;
         std::string master_name;
         std::string password;

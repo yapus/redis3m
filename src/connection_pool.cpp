@@ -29,9 +29,11 @@ using namespace redis3m;
 connection_pool::connection_pool(const std::string& sentinel_host,
                                  const std::string& master_name,
                                  unsigned int sentinel_port,
+                                 time_t to_sec,
                                  long int to_usec):
 master_name(master_name),
 sentinel_port(sentinel_port),
+to_sec(to_sec),
 to_usec(to_usec),
 password(""),
 _database(0)
@@ -53,6 +55,7 @@ connection_pool::connection_pool(const std::string& sentinel_host,
                                  unsigned int sentinel_port):
 master_name(master_name),
 sentinel_port(sentinel_port),
+to_sec(-1),
 to_usec(-1),
 password(""),
 _database(0)
@@ -171,12 +174,12 @@ connection::ptr_t connection_pool::sentinel_connection()
 #endif
             try
             {
-				if(to_usec > 0){ //check for valid timeout value
+				if(to_usec >= 0 && to_sec >= 0){ //check for valid timeout values
 					struct timeval to;
-					to.tv_sec = 0;
+					to.tv_sec = to_sec;
 					to.tv_usec = to_usec;
 					return connection::createTimeout(real_sentinel, sentinel_port, to);
-            	}
+				}
 				else
 				{
 					return connection::create(real_sentinel, sentinel_port); //normal connection
