@@ -34,7 +34,7 @@ public:
      * @param timeval timeout interval struct, default: 1 second
      * @return
      */
-    inline static ptr_t createTimeout(const std::string& host="localhost",
+    inline static ptr_t create_timeout(const std::string& host="localhost",
                                const unsigned int port=6379,
                                const struct timeval timeout=defaultTimeout())
     {

@@ -178,7 +178,7 @@ connection::ptr_t connection_pool::sentinel_connection()
                     struct timeval to;
                     to.tv_sec = to_sec;
                     to.tv_usec = to_usec;
-                    return connection::createTimeout(real_sentinel, sentinel_port, to);
+                    return connection::create_timeout(real_sentinel, sentinel_port, to);
                 }
                 else
                 {

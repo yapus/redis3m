@@ -39,7 +39,7 @@ namespace redis3m {
          * @param to_usec Timeout microseconds, default 0
          * @return
          */
-        static inline ptr_t createTimeout(const std::string& sentinel_host,
+        static inline ptr_t create_timeout(const std::string& sentinel_host,
                                    const std::string& master_name,
                                    unsigned int sentinel_port=26379,
                                    time_t to_sec=1,
