@@ -30,6 +30,25 @@ namespace redis3m {
         typedef std::shared_ptr<connection_pool> ptr_t;
 
         /**
+         * @brief Create a new connection_pool with Timeout
+         * @param sentinel_host Can be a single host or a list separate by commas,
+         * if an host has multiple IPs, connection_pool tries all of them
+         * @param master_name Master to lookup
+         * @param sentinel_port Sentinel port, default 26379
+         * @param to_sec Timeout seconds, default 1
+         * @param to_usec Timeout microseconds, default 0
+         * @return
+         */
+        static inline ptr_t create_timeout(const std::string& sentinel_host,
+                                   const std::string& master_name,
+                                   unsigned int sentinel_port=26379,
+                                   time_t to_sec=1,
+                                   long int to_usec=0)
+        {
+            return ptr_t(new connection_pool(sentinel_host, master_name, sentinel_port, to_sec, to_usec));
+        }
+
+        /**
          * @brief Create a new connection_pool
          * @param sentinel_host Can be a single host or a list separate by commas,
          * if an host has multiple IPs, connection_pool tries all of them
@@ -106,6 +125,11 @@ namespace redis3m {
 
     private:
         connection_pool(const std::string& sentinel_host,
+					   const std::string& master_name,
+					   unsigned int sentinel_port,
+					   time_t to_sec,
+					   long int to_usec);
+        connection_pool(const std::string& sentinel_host,
                         const std::string& master_name,
                         unsigned int sentinel_port);
         connection::ptr_t create_slave_connection();
@@ -119,6 +143,8 @@ namespace redis3m {
 
         std::vector<std::string> sentinel_hosts;
         unsigned int sentinel_port;
+        time_t to_sec;
+        long int to_usec;
         std::string master_name;
         std::string password;
         unsigned int _database;

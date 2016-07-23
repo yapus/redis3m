@@ -9,6 +9,7 @@
 #include <redis3m/reply.h>
 #include <vector>
 #include <memory>
+#include <sys/time.h>
 
 struct redisContext;
 
@@ -25,6 +26,20 @@ class connection: utils::noncopyable
 {
 public:
     typedef std::shared_ptr<connection> ptr_t;
+
+    /**
+     * @brief Create and open a new connection with Timeout
+     * @param host hostname or ip of redis server, default localhost
+     * @param port port of redis server, default: 6379
+     * @param timeval timeout interval struct, default: 1 second
+     * @return
+     */
+    inline static ptr_t create_timeout(const std::string& host="localhost",
+                               const unsigned int port=6379,
+                               const struct timeval timeout=defaultTimeout())
+    {
+        return ptr_t(new connection(host, port, timeout));
+    }
 
     /**
      * @brief Create and open a new connection
@@ -99,10 +114,18 @@ public:
 
 private:
     friend class connection_pool;
+    connection(const std::string& host, const unsigned port, const struct timeval timeout);
     connection(const std::string& host, const unsigned int port);
     connection(const std::string& path);
 
     role_t _role;
     redisContext *c;
+
+    static timeval defaultTimeout(){
+    	struct timeval to;
+    	to.tv_sec = 1;
+    	to.tv_usec = 0;
+    	return to;
+    }
 };
 }
