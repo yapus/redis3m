@@ -71,7 +71,7 @@ reply connection::get_reply()
     reply ret(r);
     freeReplyObject(r);
 
-    if (ret.type() == reply::type_t::ERROR &&
+    if (ret.type() == reply::type_t::ERR &&
 		(ret.str().find("READONLY") == 0) )
     {
         throw slave_read_only();

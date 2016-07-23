@@ -9,7 +9,11 @@
 #include <redis3m/reply.h>
 #include <vector>
 #include <memory>
-#include <sys/time.h>
+#ifndef WIN32
+ #include <sys/time.h>
+#else
+ #include <redis3m/utils/sys_time.h>
+#endif
 
 struct redisContext;
 

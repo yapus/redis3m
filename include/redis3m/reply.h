@@ -27,7 +27,7 @@ public:
         INTEGER = 3,
         NIL = 4,
         STATUS = 5,
-        ERROR = 6
+        ERR = 6
     };
 
     /**
@@ -57,7 +57,7 @@ public:
 
     inline bool operator==(const std::string& rvalue) const
     {
-		if (_type == type_t::STRING || _type == type_t::ERROR || _type == type_t::STATUS)
+		if (_type == type_t::STRING || _type == type_t::ERR || _type == type_t::STATUS)
         {
             return _str == rvalue;
         }

@@ -29,8 +29,11 @@ redis3m.pc
 patterns_test
 docs
 cluster_pool_test
+Redis3M-VisualStudio/*.suo
+Redis3M-VisualStudio/*.opensdf
 Redis3M-VisualStudio/ipch/
 Redis3M-VisualStudio/Release/
 Redis3M-VisualStudio/Debug/
 Redis3M-VisualStudio/Redis3M-VisualStudio/Debug/
+Redis3M-VisualStudio/Redis3M-VisualStudio/*.vcxproj.*
 *.sdf

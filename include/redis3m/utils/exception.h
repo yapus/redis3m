@@ -6,6 +6,12 @@
 #include <exception>
 #include <string>
 
+#ifndef _MSC_VER
+#define NOEXCEPT noexcept
+#else
+#define NOEXCEPT
+#endif
+
 namespace redis3m {
     class exception: public std::exception
     {
@@ -14,7 +20,7 @@ namespace redis3m {
         _what(what){}
         virtual ~exception() throw() {}
         
-        inline virtual const char* what() const noexcept override
+		inline virtual const char* what() const NOEXCEPT override
         {
             return _what.c_str();
         }

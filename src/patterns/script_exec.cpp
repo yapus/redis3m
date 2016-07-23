@@ -40,7 +40,7 @@ reply patterns::script_exec::exec(connection::ptr_t connection,
     exec_command.insert(exec_command.end(), keys.begin(), keys.end());
     exec_command.insert(exec_command.end(), args.begin(), args.end());
     reply r = connection->run(exec_command);
-    if (r.type() == reply::type_t::ERROR &&
+    if (r.type() == reply::type_t::ERR &&
 		r.str().find("NOSCRIPT") == 0
 		)
     {

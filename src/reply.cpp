@@ -7,12 +7,12 @@
 using namespace redis3m;
 
 reply::reply(redisReply *c_reply):
-_type(type_t::ERROR),
+_type(type_t::ERR),
 _integer(0)
 {
     _type = static_cast<type_t>(c_reply->type);
     switch (_type) {
-	case type_t::ERROR:
+	case type_t::ERR:
 	case type_t::STRING:
 	case type_t::STATUS:
             _str = std::string(c_reply->str, c_reply->len);
@@ -31,6 +31,6 @@ _integer(0)
 }
 
 reply::reply():
-_type(type_t::ERROR),
+_type(type_t::ERR),
 _integer(0) {
 }

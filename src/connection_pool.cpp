@@ -127,7 +127,7 @@ connection::ptr_t connection_pool::get(connection::role_t type)
         if (_database != 0)
         {
             reply r = ret->run(command("SELECT")(std::to_string(_database)));
-            if (r.type() == reply::type_t::ERROR)
+            if (r.type() == reply::type_t::ERR)
             {
                 throw wrong_database(r.str());
             }
@@ -176,7 +176,11 @@ connection::ptr_t connection_pool::sentinel_connection()
             {
                 if(to_usec >= 0 && to_sec >= 0){ //check for valid timeout values
                     struct timeval to;
-                    to.tv_sec = to_sec;
+                    to.tv_sec =
+                    #ifdef WIN32
+                                (long)
+                    #endif
+                                    to_sec;
                     to.tv_usec = to_usec;
                     return connection::create_timeout(real_sentinel, sentinel_port, to);
                 }
@@ -210,7 +214,7 @@ connection::role_t connection_pool::get_role(connection::ptr_t conn)
     reply r = conn->run(command("ROLE"));
     std::string role_s;
 
-    if (r.type() == reply::type_t::ERROR
+    if (r.type() == reply::type_t::ERR
 #ifndef NO_BOOST
         && boost::algorithm::find_first(r.str(),"unknown"))
 #else
@@ -252,7 +256,7 @@ connection::role_t connection_pool::get_role(connection::ptr_t conn)
 
 bool connection_pool::authenticate(connection::ptr_t conn)
 {
-    return (conn->run(command("AUTH") << password).type() != reply::type_t::ERROR);
+    return (conn->run(command("AUTH") << password).type() != reply::type_t::ERR);
 }
 
 connection::ptr_t connection_pool::create_slave_connection()
